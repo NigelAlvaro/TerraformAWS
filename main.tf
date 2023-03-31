@@ -1,62 +1,40 @@
 provider "aws" {
-  region = "us-west-1"
-  access_key = "AKIAYFFGET2KS6R2NKW5"
-  secret_key = "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"
+  region = var.credentials.region
+  access_key = var.credentials.access_key
+  secret_key = var.credentials.secret_key
 }
 
-# resource "aws_vpc" "DemoVPC" {
-#   cidr_block = "10.0.0.0/16"
-#   enable_dns_hostnames = true
-#   enable_dns_support = true
-#   tags {
-#     Name = "DemoVPC"
-#   }
-# }
-
-# resource "aws_subnet" "DemoSubnet" {
-#   cidr_block = "${cidrsubnet(aws_vpc.DemoVPC.cidr_block, 3, 1)}"
-#   vpc_id = "${aws_vpc.DemoVPC.id}"
-#   availability_zone = "us-east-1a"
-# }
-
-resource "aws_instance" "DemoEC2" {
-  ami           = "ami-0925fd223898ee5ba"
-  instance_type = "t2.micro"
-  security_groups =  ["SG-Eddie"]
-  key_name   = aws_key_pair.DemoKeypair.key_name
+resource "aws_instance" "demo_ec2" {
+  ami           = var.ec2.ami
+  instance_type = var.ec2.instance_type
+  security_groups =  [aws_security_group.bastion_host.name]
+  key_name   = aws_key_pair.demokeypair.key_name
   tags = {
-    Name = "DemoEC2"
+    Name = "${var.prefix}-bastion-host"
   }
 }
 
-resource "aws_security_group" "SG-Eddie" {
-  name = "SG-Eddie" 
-  description = "security group" 
+resource "aws_security_group" "bastion_host" {
+  name = "${var.prefix}-bastion-host" 
+  description = "security group access for all" 
   
 ingress {
-    cidr_blocks = ["0.0.0.0/0"]
-    from_port = 22
-    to_port = 22
-    protocol = "tcp"
+    cidr_blocks = var.ingress.cidr_blocks
+    from_port = var.ingress.from_port
+    to_port = var.ingress.from_port
+    protocol = var.ingress.protocol
   }
 egress {
-   from_port = 0
-   to_port = 0
-   protocol = "-1"
-   cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = var.egress.cidr_blocks
+    from_port = var.egress.from_port
+    to_port = var.egress.from_port
+    protocol = var.egress.protocol
  }
-  tags = {
-    Name = "SG-Eddie"
-  }
 }
 
-resource "aws_key_pair" "DemoKeypair" {
-  key_name   = "DemoKeypair"
+resource "aws_key_pair" "demokeypair" {
+  key_name   = "${var.prefix}-KeyPair"
   public_key = tls_private_key.rsa.public_key_openssh
-
-    tags = {
-    Name = "DemoKeypair"
-  }
 }
 
 resource "tls_private_key" "rsa" {
@@ -64,6 +42,6 @@ resource "tls_private_key" "rsa" {
   rsa_bits  = 4096
 }
 
-output "NotImportant" {
+output "keypair" {
   value  = nonsensitive(tls_private_key.rsa.private_key_pem)
 }
