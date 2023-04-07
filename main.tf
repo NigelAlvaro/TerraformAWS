@@ -18,13 +18,13 @@ resource "aws_instance" "demo_ec2" {
 resource "aws_security_group" "bastion_host" {
   name        = "${var.prefix}-bastion-host"
   description = "security group access for all"
+  count = length(var.ingress)
 
   ingress {
-    cidr_blocks = var.ingress.cidr_blocks
-    from_port   = var.ingress.from_port
-    to_port     = var.ingress.from_port
-    protocol    = var.ingress.protocol
-
+    cidr_blocks = var.ingress[count.index].cidr_blocks
+    from_port   = var.ingress[count.index].from_port
+    to_port     = var.ingress[count.index].from_port
+    protocol    = var.ingress[count.index].protocol
   }
   egress {
     cidr_blocks = var.egress.cidr_blocks

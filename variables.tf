@@ -8,19 +8,26 @@ variable "credentials" {
 }
 
 variable "ingress" {
-  type = object({
+  type = list(object({
     cidr_blocks = list(string)
     from_port   = number
     to_port     = number
     protocol    = string
-  })
+  }))
 
-  default = {
+  default = [{
     cidr_blocks = ["0.0.0.0/0"]
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
+  },
+  {
+    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = 8989
+    to_port     = 8989
+    protocol    = "tcp"
   }
+  ]
   description = "Ingress Config for SG"
 }
 
