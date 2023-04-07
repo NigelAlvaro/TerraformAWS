@@ -4,11 +4,6 @@ variable "credentials" {
     access_key = string
     secret_key = string
   })
-  default = {
-    region     = "us-west-2"
-    access_key = "AKIAYFFGET2KRKDOI2EF"
-    secret_key = "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"
-  }
   description = "Credentials needed to connect to my AWS account"
 }
 
