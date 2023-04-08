@@ -43,8 +43,18 @@ variable "egress" {
 
 variable "prefix" {
   type = string
+
+  validation {
+    condition = length(var.prefix) != 0
+    error_message = "Please enter prefix name"
+  }
 }
 
 variable "os_type" {
   type = string
+
+  validation {
+    condition = var.os_type == "linux" ||var.os_type == "ubuntu"||var.os_type == "windows"
+    error_message = "The OS type must be either 'linux', 'ubuntu', or 'windows'"
+  }
 }

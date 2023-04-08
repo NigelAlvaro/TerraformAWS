@@ -34,7 +34,7 @@ resource "aws_security_group" "bastion_host" {
 }
 
 resource "aws_key_pair" "demokeypair" {
-  key_name   = "${var.prefix}-keypair"
+  key_name   = "${var.prefix}-bastion-host"
   public_key = tls_private_key.rsa.public_key_openssh
 
 
@@ -47,4 +47,14 @@ resource "tls_private_key" "rsa" {
 
 output "keypair" {
   value = nonsensitive(tls_private_key.rsa.private_key_pem)
+}
+
+output "ec2_ips" {
+  description = "The public IP of new created EC2"
+  value = try(aws_instance.demo_ec2.public_ip, "")
+}
+
+output "ec2_dns" {
+  description = "The public DNS name of new created EC2"
+  value = try(aws_instance.demo_ec2.public_dns, "")
 }
