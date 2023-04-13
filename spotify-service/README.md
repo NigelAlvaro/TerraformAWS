@@ -1,6 +1,6 @@
-# This Python Application make Weather WebApp
+# This Python Application make Spotify WebApp
 
-In this project, we will create Python web applications using weather API. The script will create a Python web server that listens on port 8989 and return SanDiego's weather on specific date when the endpoint http://localhost:8989/yyyy-mm-dd is hit.
+In this project, we will create Python web applications using Spotify API. The script will create a Python web server that listens on port 8989 and return the Album Cover from specific songs when the endpoint http://localhost:8989/song-name/artist-name is hit.
 
 ## Step 1: Installing Dependencies
 
@@ -31,7 +31,6 @@ pip install uvicorn
 To run the web applications using different frameworks, run the following command: </br>
 FastAPI:
 ```bash
-py weather.py
+py spotify.py
 ```
-</br></br>
-## File Contents in this folder:
+
